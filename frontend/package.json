@@ -1,0 +1,31 @@
+{
+  "name": "petvet-project",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@types/lodash.isequal": "^4.5.8",
+    "@vueuse/core": "^10.10.0",
+    "axios": "^1.7.2",
+    "lodash": "^4.17.21",
+    "maska": "^2.1.11",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.2",
+    "vue3-toastify": "^0.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "@vitejs/plugin-legacy": "^5.4.1",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "prettier": "3.2.5",
+    "sass": "^1.77.2",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0",
+    "vue-tsc": "^2.0.6"
+  }
+}

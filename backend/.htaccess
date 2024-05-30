@@ -1,0 +1,12 @@
+# .htaccess файл для настройки Apache
+
+# Включаем модуль rewrite
+RewriteEngine On
+
+# Исключаем определенные файлы из переписывания URL
+RewriteRule ^(login|register)\.php$ - [L]
+
+# Переписывание всех запросов к index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?/$1 [L]

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="1df2e683-6b5c-481a-af6e-4cfd8a27f32e" name="vet" url="https://31.128.37.156/">
+        <fileTransfer accessType="SFTP" host="31.128.37.156" port="22" sshConfigId="9d2a3822-79f0-42fc-a2d6-65b821a93807" sshConfig="root@31.128.37.156:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

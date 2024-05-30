@@ -1,0 +1,52 @@
+@use "sass:map";
+
+@mixin active {
+  transform: scale(1.05);
+  transition: 0.1s;
+}
+
+$sizes: ("xs":320px, "sm":576px, "md":768px, "lg":992px, "xl":1200px, 'xxl': 1621px);
+
+@mixin desktop  {
+  @media screen and (max-width: map.get($sizes, xxl)) {
+    @content
+  }
+}
+
+@mixin tabletplus {
+  @media screen and (min-width: map.get($sizes, xl) + 1px) and (max-width: map.get($sizes, xxl) - 1px) {
+    @content
+  }
+}
+
+@mixin tablet {
+  @media screen and (min-width: 992px + 1px) and (max-width: map.get($sizes, xl) - 1px) {
+    @content
+  }
+}
+
+@mixin medium  {
+  @media screen and (min-width:  map.get($sizes, md) + 1px) and (max-width: map.get($sizes, lg)) {
+    @content
+  }
+}
+
+@mixin little  {
+  @media screen and (min-width:  map.get($sizes, sm)) and (max-width: map.get($sizes, md)) {
+    @content
+  }
+}
+
+@mixin small {
+  @media screen and  (min-width:  map.get($sizes, xs)) and (max-width: map.get($sizes, sm)) {
+    box-shadow: none;
+    @content
+  }
+}
+
+@mixin xs {
+  @media screen and (max-width: map.get($sizes, xs)) {
+    @content
+  }
+}
+
