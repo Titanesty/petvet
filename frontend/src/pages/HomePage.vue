@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="home__container container">
-      <DoubleBlock @moreDetails="moreDetails" :content="logoTitleInfo" btn="Записаться" />
+      <DoubleBlock @appointment="moreDetails" :content="logoTitleInfo" btn="Записаться" />
       <AboutUs />
       <ServicesPrice />
       <OurSpecialists />
