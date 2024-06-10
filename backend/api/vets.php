@@ -5,29 +5,6 @@ require '../api/cors.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
-    // $authorization = getallheaders()["Authorization"] ?? null;
-
-//    if ($authorization) {
-//        if (preg_match('/Bearer\s(\S+)/', $authorization, $matches)) {
-//            try {
-//                $jwt = $matches[1];
-//                $decoded = JWT::decode($jwt, new Key($_ENV["JWT_SECRET"], 'HS256'));
-//            } catch (Exception $e) {
-//                http_response_code(401);
-//                echo json_encode(array("message" => "Access denied. Invalid token decode."));
-//                exit();
-//            }
-//        } else {
-//            http_response_code(401);
-//            echo json_encode(array("message" => "Access denied. Invalid token decode."));
-//            exit();
-//        }
-//    } else {
-//        http_response_code(401);
-//        echo json_encode(array("message" => "Access denied. Invalid token decode."));
-//        exit();
-//    }
-
     // Проверяем, передан ли параметр id в запросе
     if (isset($_GET['id']) && !empty($_GET['id'])) {
         // Если передан id, получаем данные для конкретного врача
