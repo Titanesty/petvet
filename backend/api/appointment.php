@@ -21,16 +21,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($checkAppointmentStmt->rowCount() > 0) {
                 http_response_code(400);
-                echo json_encode(["error" => "Пользователь с таким логином уже существует."]);
+                echo json_encode(["error" => "Пользователь с таким телефоном уже существует."]);
                 exit;
             }
 
-            $sql = "INSERT INTO appointments (name, phone) VALUES (:name, :phone)";
+            $sql = "INSERT INTO appointments (name, phone, date) VALUES (:name, :phone, :date)";
             $stmt = $pdo->prepare($sql);
 
             $params = [
                 ":phone" => $phone,
-                ":name" => $name
+                ":name" => $name,
+                ":date" => date("Y-m-d H:i:s")
             ];
 
             // Выполнение запроса
