@@ -9,7 +9,7 @@
   </div>
   <Teleport to="body">
     <OpenModal v-model:show="showModal">
-      <BannerAppointment ref="banner" btn="Записаться" />
+      <BannerAppointment @sendForm="sendForm" ref="banner" btn="Записаться" />
     </OpenModal>
   </Teleport>
 </template>
@@ -24,6 +24,7 @@ import Api from '@/api/api.js';
 import TheButton from '@/components/common/TheButton.vue';
 import OpenModal from '@/components/OpenModal.vue';
 import BannerAppointment from '@/components/BannerAppointment.vue';
+import { toast } from 'vue3-toastify';
 
 const route = useRoute();
 const router = useRouter();
@@ -104,6 +105,27 @@ const appointment = () => {
   } else {
     showModal.value = true;
   }
+};
+
+const sendForm = async value => {
+  if (!value.name || !value.phone) {
+    toast('Введите все обязательные поля!', {
+      autoClose: 2000,
+      type: 'warning',
+    });
+    return;
+  }
+  if (value.phone.length < 17) {
+    toast('Неверный формат номера!', {
+      autoClose: 2000,
+      type: 'warning',
+    });
+    return;
+  }
+  toast('Вы успешно записались к специлисту! Ожидайте звонка.', {
+    autoClose: 2000,
+    type: 'success',
+  });
 };
 </script>
 

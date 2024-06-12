@@ -24,7 +24,7 @@
           @input="handleInput(field.key, $event)" />
       </div>
     </div>
-    <TheButton class="form__btn" :class="{ 'form__btn--active': activeButton }" @click="sendForm"
+    <TheButton class="form__btn" :class="{ 'form__btn--active': activeButton && type !== 'blue' }" @click="sendForm"
       ><span>{{ btn }}</span></TheButton
     >
   </div>
@@ -50,6 +50,7 @@ const activeButton = ref(false);
 const form = ref({});
 const sendForm = () => {
   emit('sendForm', form.value);
+  form.value = {};
 };
 
 const handleInput = (value, event) => {

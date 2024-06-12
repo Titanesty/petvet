@@ -11,8 +11,6 @@
                 <div
                   class="login__content"
                   :class="{ 'login__content--active': isActiveContent.name }"
-                  contenteditable="true"
-                  @input="onInput('name', $event)"
                   ref="name"
                   @click="handleContenteditable('name', $event)">
                   {{ profileInfo.name }}
@@ -24,9 +22,6 @@
                 <div
                   class="login__content login__content-phone"
                   :class="{ 'login__content--active': isActiveContent.phone }"
-                  contenteditable="true"
-                  @input="onInput('phone', $event)"
-                  @click="handleContenteditable('phone', $event)"
                   ref="phone">
                   {{ mask(profileInfo.phone) }}
                 </div>
@@ -34,12 +29,6 @@
             </div>
 
             <div class="login__info-wrapper">
-              <TheButton
-                class="login__info-btn"
-                :class="{ 'login__info-btn--active': saveActive, 'login__info-btn--disable': !saveActive }"
-                @click="saveInfoProfile"
-                ><span>Сохранить</span></TheButton
-              >
               <TheButton class="login__info-btn" @click="logOut"><span>Выйти из аккаунта</span></TheButton>
             </div>
           </div>
@@ -91,7 +80,7 @@ import Api from '../api/api.js';
 import { useRoute, useRouter } from 'vue-router';
 import DropdownList from '@/components/DropdownList.vue';
 import { isEqual } from 'lodash';
-import { onClickOutside } from '@vueuse/core';
+import { toast } from 'vue3-toastify';
 
 const router = useRouter();
 const route = useRoute();
@@ -100,8 +89,6 @@ const name = ref(null);
 const phone = ref(null);
 const recordBlock = ref(null);
 const archiveList = ref([]);
-
-const refContenteditable = { name, phone };
 
 const getVet = async vetId => {
   try {
@@ -145,13 +132,39 @@ const getArchive = async () => {
       list.push(item);
     }
     archiveList.value = list;
-  } catch (e) {}
+  } catch (e) {
+    console.error(`Error get archive, ${e.message}`);
+  }
 };
 
 const record = async () => {
   try {
-    const result = await Api.records(recordData.value);
-  } catch (e) {}
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Месяцы в JS начинаются с 0, поэтому добавляем 1
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const [timeFrom, timeTo] = recordData.value.date.split('-');
+    const record = {
+      animal: recordData.value.pet,
+      veterinarian_id: recordData.value.vet.toString(),
+      time_from: `${year}-${month}-${day}T${timeFrom}:00`,
+      time_to: `${year}-${month}-${day}T${timeTo}:00`,
+    };
+    const result = await Api.records(record);
+    if (result) {
+      toast('Вы успешно записались!', {
+        autoClose: 2000,
+        type: 'success',
+      });
+      await getArchive();
+    }
+  } catch (e) {
+    console.error(`Error record, ${e.message}`);
+    toast('Ошибка записи', {
+      autoClose: 2000,
+      type: 'error',
+    });
+  }
 };
 
 const handleContenteditable = (value, event) => {
@@ -169,31 +182,6 @@ const getVets = async () => {
         return { id, value: full_name, description: position };
       }),
     ];
-};
-
-const saveInfoProfile = () => {};
-
-const onInput = (value, event) => {
-  let maxLength;
-
-  if (value === 'name') {
-    maxLength = 5;
-  } else if (value === 'phone') {
-    maxLength = 11;
-  }
-
-  profileInfo.value[value] = event.target.innerText.slice(0, maxLength);
-  if (event.target.innerText.length > maxLength) {
-    event.target.innerText = profileInfo.value[value];
-
-    // Перемещаем курсор в конец текста
-    const range = document.createRange();
-    const selection = window.getSelection();
-    range.selectNodeContents(refContenteditable[value].value);
-    range.collapse(false);
-    selection.removeAllRanges();
-    selection.addRange(range);
-  }
 };
 
 const recordList = ref([
@@ -221,30 +209,30 @@ const recordList = ref([
     id: 'date',
     title: 'Выберете дату и время',
     list: [
-      { id: 0, value: '06:00-07:00', description: '' },
-      { id: 0, value: '07:00-08:00', description: '' },
-      { id: 0, value: '08:00-09:00', description: '' },
-      { id: 0, value: '09:00-10:00', description: '' },
-      { id: 1, value: '10:00-11:00', description: '' },
-      { id: 2, value: '11:00-12:00', description: '' },
-      { id: 3, value: '12:00-13:00', description: '' },
-      { id: 4, value: '13:00-14:00', description: '' },
-      { id: 5, value: '14:00-15:00', description: '' },
-      { id: 6, value: '15:00-16:00', description: '' },
-      { id: 7, value: '16:00-17:00', description: '' },
-      { id: 8, value: '17:00-18:00', description: '' },
-      { id: 8, value: '18:00-19:00', description: '' },
-      { id: 8, value: '19:00-20:00', description: '' },
-      { id: 8, value: '20:00-21:00', description: '' },
-      { id: 8, value: '21:00-22:00', description: '' },
-      { id: 8, value: '22:00-23:00', description: '' },
-      { id: 8, value: '23:00-24:00', description: '' },
-      { id: 8, value: '24:00-01:00', description: '' },
-      { id: 8, value: '01:00-02:00', description: '' },
-      { id: 8, value: '02:00-03:00', description: '' },
-      { id: 8, value: '03:00-04:00', description: '' },
-      { id: 8, value: '04:00-05:00', description: '' },
-      { id: 8, value: '05:00-06:00', description: '' },
+      { id: 0, value: '06:00-07:00' },
+      { id: 0, value: '07:00-08:00' },
+      { id: 0, value: '08:00-09:00' },
+      { id: 0, value: '09:00-10:00' },
+      { id: 1, value: '10:00-11:00' },
+      { id: 2, value: '11:00-12:00' },
+      { id: 3, value: '12:00-13:00' },
+      { id: 4, value: '13:00-14:00' },
+      { id: 5, value: '14:00-15:00' },
+      { id: 6, value: '15:00-16:00' },
+      { id: 7, value: '16:00-17:00' },
+      { id: 8, value: '17:00-18:00' },
+      { id: 8, value: '18:00-19:00' },
+      { id: 8, value: '19:00-20:00' },
+      { id: 8, value: '20:00-21:00' },
+      { id: 8, value: '21:00-22:00' },
+      { id: 8, value: '22:00-23:00' },
+      { id: 8, value: '23:00-24:00' },
+      { id: 8, value: '24:00-01:00' },
+      { id: 8, value: '01:00-02:00' },
+      { id: 8, value: '02:00-03:00' },
+      { id: 8, value: '03:00-04:00' },
+      { id: 8, value: '04:00-05:00' },
+      { id: 8, value: '05:00-06:00' },
     ],
   },
 ]);
@@ -273,7 +261,6 @@ const saveActive = ref(false);
 const getProfileInfo = async () => {
   try {
     const data = await Api.profile();
-    console.log('D', data);
     profileInfo.value.name = data.data.user.name;
     profileInfo.value.login = data.data.user.login;
     profileInfo.value.phone = data.data.user.phone;
@@ -286,15 +273,6 @@ const logOut = () => {
   localStorage.removeItem('access_token');
   router.push({ path: '/sign-in' });
 };
-
-onClickOutside(refContenteditable.name, () => {
-  isActiveContent.value.name = false;
-  if (profileInfoCopy.value.name) profileInfo.value.name = profileInfoCopy.value.name;
-});
-onClickOutside(refContenteditable.phone, () => {
-  isActiveContent.value.phone = false;
-  if (profileInfoCopy.value.phone) profileInfo.value.phone = profileInfoCopy.value.phone;
-});
 </script>
 
 <style lang="scss" scoped>

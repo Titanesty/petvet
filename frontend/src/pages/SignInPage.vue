@@ -45,7 +45,7 @@ const auth = async value => {
     await new Promise(resolve => setTimeout(() => resolve(), 2000));
     await router.push({ path: '/login' });
   } catch (e) {
-    toast('Ошибка авторизации, попробуйте позже', {
+    toast('Ошибка авторизации, неверный логин или пароль', {
       autoClose: 1000,
       type: 'error',
     });

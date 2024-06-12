@@ -39,7 +39,10 @@ export default class Api {
 
   static async records(data) {
     return axios.post('/api/records.php', {
-      data,
+      animal: data.animal,
+      time_from: data.time_from,
+      time_to: data.time_to,
+      veterinarian_id: data.veterinarian_id,
     });
   }
 
@@ -49,6 +52,19 @@ export default class Api {
       headers: {
         'Content-Type': 'application/octet-stream',
       },
+    });
+  }
+
+  static async subscribe(email) {
+    return axios.post('/api/subscribe.php', {
+      email,
+    });
+  }
+
+  static async appointment(data) {
+    return axios.post('/api/appointment.php', {
+      phone: data.phone,
+      name: data.name,
     });
   }
 }

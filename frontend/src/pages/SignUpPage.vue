@@ -18,6 +18,9 @@ import TitleBlock from '../components/TitleBlock.vue';
 import SendForm from '../components/SendForm.vue';
 import AuthApi from '../api/api.js';
 import { toast } from 'vue3-toastify';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const forms = [
   { id: 0, placeholder: 'Логин', key: 'login', maxLength: 20 },
@@ -59,6 +62,7 @@ const register = async data => {
         autoClose: 1000,
         type: 'success',
       });
+      await router.push('/login');
     } else {
       toast('Ошибка регистрации.', {
         autoClose: 1000,

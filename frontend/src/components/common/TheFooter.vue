@@ -18,7 +18,7 @@
           :class="{ 'footer__banner--active': isActiveBanner }"
           @blur="isActiveBanner = false"
           @focus="isActiveBanner = true"
-          @subscribe="subscribe" />
+          @subscribe="toSubscribe" />
       </div>
       <div class="footer__description">
         <span>Информация на сайте носит ознакомительный характер и не является публичной офертой.</span>
@@ -31,6 +31,7 @@
 import SubscribeNewsletter from '../SubscribeNewsletter.vue';
 import { ref } from 'vue';
 import { toast } from 'vue3-toastify';
+import Api from '@/api/api.js';
 
 const isActiveBanner = ref(false);
 
@@ -45,11 +46,26 @@ const footerList = [
 const address = 'Таганрог, ул. Чехова, д. 75';
 const telNumber = '+7 499 455-68-73';
 
-const subscribe = value => {
-  toast(`Вы успешно подписались ${value}`, {
-    autoClose: 1000,
-    type: 'success',
-  });
+const toSubscribe = async value => {
+  try {
+    const result = await Api.subscribe(value);
+    toast(`Вы успешно подписались ${value}`, {
+      autoClose: 2000,
+      type: 'success',
+    });
+  } catch (e) {
+    if (e.response.status === 400) {
+      toast(`Вы уже подписаны на рассылку`, {
+        autoClose: 1000,
+        type: 'info',
+      });
+    } else {
+      toast(`Ошибка подписки`, {
+        autoClose: 1000,
+        type: 'error',
+      });
+    }
+  }
 };
 </script>
 

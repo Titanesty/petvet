@@ -5,7 +5,7 @@
       <AboutUs />
       <ServicesPrice />
       <OurSpecialists />
-      <BannerAppointment ref="banner" btn="Записаться" type="blue" />
+      <BannerAppointment ref="banner" @sendForm="sendForm" btn="Записаться" type="blue" />
     </div>
   </div>
 </template>
@@ -18,6 +18,8 @@ import ServicesPrice from '../sections/ServicesPrice.vue';
 import AboutUs from '../sections/AboutUs.vue';
 import BannerAppointment from '../components/BannerAppointment.vue';
 import { ref } from 'vue';
+import { toast } from 'vue3-toastify';
+import Api from '@/api/api.js';
 
 const banner = ref(null);
 
@@ -35,8 +37,29 @@ const logoTitleInfo = {
 };
 
 const moreDetails = () => {
-  if (!banner.value) return;
-  banner.value.appointment.scrollIntoView({ behavior: 'smooth' });
+  banner.value?.appointment.scrollIntoView({ behavior: 'smooth' });
+};
+
+const sendForm = async value => {
+  if (!value.name || !value.phone) {
+    toast('Введите все обязательные поля!', {
+      autoClose: 2000,
+      type: 'warning',
+    });
+    return;
+  }
+  if (value.phone.length < 17) {
+    toast('Неверный формат номера!', {
+      autoClose: 2000,
+      type: 'warning',
+    });
+    return;
+  }
+  const result = await Api.appointment(value);
+  toast('Вы успешно записались к специлисту! Ожидайте звонка.', {
+    autoClose: 2000,
+    type: 'success',
+  });
 };
 </script>
 

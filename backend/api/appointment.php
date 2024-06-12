@@ -7,10 +7,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents("php://input"), true);
     if ($data) {
         $phone = $data['phone'];
+        $name = $data['name'];
 
-        if (!empty($phone)) {
+        if (
+            !empty($phone) && !empty($name)
 
-            $checkAppointmentSql = "SELECT id FROM appointment WHERE phone = :phone";
+        ) {
+
+            $checkAppointmentSql = "SELECT id FROM appointments WHERE phone = :phone";
             $checkAppointmentStmt = $pdo->prepare($checkAppointmentSql);
             $checkAppointmentStmt->bindParam(':phone', $phone);
             $checkAppointmentStmt->execute();
@@ -21,11 +25,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
 
-            $sql = "INSERT INTO appointment (email) VALUES (:email)";
+            $sql = "INSERT INTO appointments (name, phone) VALUES (:name, :phone)";
             $stmt = $pdo->prepare($sql);
 
             $params = [
-                ":phone" => $phone
+                ":phone" => $phone,
+                ":name" => $name
             ];
 
             // Выполнение запроса

@@ -39,18 +39,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($animal && $time_from && $time_to && $client_id && $veterinarian_id) {
             $valid_time_from = date('Y-m-d H:i:s', strtotime($time_from));
             $valid_time_to = date('Y-m-d H:i:s', strtotime($time_to));
-            // Проверка, существует ли уже запись
-            $checkRecordSql = "SELECT * FROM records WHERE veterinarian_id = :veterinarian_id AND time_from = :time_from ";
-            $checkRecordStmt = $pdo->prepare($checkRecordSql);
-            $checkRecordStmt->bindParam(':veterinarian_id', $veterinarian_id, PDO::PARAM_INT);
-            $checkRecordStmt->bindParam(':time_from', $valid_time_from, PDO::PARAM_STR);
-            $checkRecordStmt->execute();
 
-            if ($checkRecordStmt->rowCount() > 0) {
+//            // Проверка, существует ли уже запись
+//            $checkRecordSql = "SELECT * FROM records WHERE veterinarian_id = :veterinarian_id AND time_from = :time_from ";
+//            $checkRecordStmt = $pdo->prepare($checkRecordSql);
+//            $checkRecordStmt->bindParam(':veterinarian_id', $veterinarian_id, PDO::PARAM_INT);
+//            $checkRecordStmt->bindParam(':time_from', $valid_time_from, PDO::PARAM_STR);
+//            $checkRecordStmt->execute();
+
+//            if ($checkRecordStmt->rowCount() > 0) {
+//                http_response_code(400);
+//                echo json_encode(["error" => "The appointment is already taken."]);
+//                exit;
+//            }
+
+            // Проверка существования veterinarian_id в таблице vets
+            $checkVetSql = "SELECT COUNT(*) FROM vets WHERE id = :veterinarian_id";
+            $checkVetStmt = $pdo->prepare($checkVetSql);
+            $checkVetStmt->bindParam(':veterinarian_id', $veterinarian_id, PDO::PARAM_INT);
+            $checkVetStmt->execute();
+            $vetExists = $checkVetStmt->fetchColumn();
+
+            if ($vetExists == 0) {
                 http_response_code(400);
-                echo json_encode(["error" => "The appointment is already taken."]);
-                exit;
+                echo json_encode(["error" => "Veterinarian does not exist."]);
+                exit();
             }
+
+            echo json_encode(["ar"=>$vetExists, "arr"=>$veterinarian_id]);
 
             $sql = "INSERT INTO records (animal, time_from, time_to, client_id, veterinarian_id) VALUES (:animal, :time_from, :time_to, :client_id, :veterinarian_id)";
             $stmt = $pdo->prepare($sql);
@@ -64,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ];
 
             if ($stmt->execute($params)) {
-                echo json_encode(["message" => "Successfully recorded"]);
+                echo json_encode(["message" => "Successfully recorded", "record" => $params]);
             } else {
                 http_response_code(400);
                 echo json_encode(["error" => "Recording error."]);
@@ -80,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $jwt = $matches[1];
         try {
             $decoded = JWT::decode($jwt, new Key($_ENV["JWT_SECRET"], 'HS256'));
-            $decoded_array = (array) $decoded;
+            $decoded_array = (array)$decoded;
             $client_id = $decoded_array['data']->id;
 
             $checkRecordSql = "SELECT * FROM records WHERE client_id = :client_id";

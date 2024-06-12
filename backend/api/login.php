@@ -3,7 +3,6 @@ global $pdo;
 require '../config/database.php';
 require '../api/cors.php';
 
-
 use Firebase\JWT\JWT;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

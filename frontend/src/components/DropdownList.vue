@@ -30,7 +30,8 @@ const dropdown = defineModel();
 const target = ref(null);
 
 const getOption = item => {
-  dropdown.value[props.valueList.id] = item;
+  if (props.valueList.id === 'vet') dropdown.value[props.valueList.id] = item.id;
+  else dropdown.value[props.valueList.id] = item.value;
   const copyDropdown = JSON.parse(JSON.stringify(dropdown.value));
   delete copyDropdown['id'];
   if (Object.values(copyDropdown).every(i => !!i)) dropdown.value.id = Date.now();
@@ -39,7 +40,11 @@ const getOption = item => {
 const isActiveList = ref(false);
 
 const titleDropdown = computed(() => {
-  if (dropdown.value[props.valueList.id]) return dropdown.value[props.valueList.id]?.value;
+  if (dropdown.value[props.valueList.id]) {
+    if (props.valueList.id === 'vet')
+      return props.valueList.list.find(i => i.id === dropdown.value[props.valueList.id]).value;
+    return dropdown.value[props.valueList.id];
+  }
   return props.valueList.title;
 });
 
