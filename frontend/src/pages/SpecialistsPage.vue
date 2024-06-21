@@ -9,12 +9,13 @@
         </div>
       </TitleBlock>
       <SectionBlock class="specialist-page__list" :info="{ title: '', description: '' }">
-        <div v-if="!specialistList.length" v-for="n of 8" class="empty"><div class="loader"></div></div>
+        <div v-if="!specialistList.length" v-for="n of 8" :key="n" class="empty"><div class="loader"></div></div>
         <CardSpecialist
           class="specialist-page__item"
           v-for="specialist of specialistList"
           :key="specialist.id"
-          :info="specialist" />
+          :info="specialist"
+          @click="goToPageVet(specialist.id)" />
       </SectionBlock>
       <div class="specialist-page__row">
         <div class="specialist-page__text specialist-page__col">
@@ -47,12 +48,18 @@ import Vet7 from '../static/images/vets/vet7.png';
 import Vet8 from '../static/images/vets/vet8.png';
 import { onMounted, ref } from 'vue';
 import Api from '@/api/api.js';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const vetsImage = [Vet8, Vet2, Vet3, Vet4, Vet1, Vet6, Vet7, Vet5];
 
 onMounted(async () => {
   await getVets();
 });
+
+const goToPageVet = id => {
+  router.push({ name: `Специалст`, params: { id: id } });
+};
 
 const getVets = async () => {
   try {

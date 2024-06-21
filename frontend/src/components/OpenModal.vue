@@ -14,6 +14,8 @@
 <script setup>
 import { watch } from 'vue';
 
+const emit = defineEmits(['close']);
+
 const show = defineModel('show');
 
 watch(show, value => {
@@ -27,6 +29,7 @@ watch(show, value => {
 });
 
 const close = () => {
+  emit('close');
   show.value = false;
 };
 </script>
@@ -97,7 +100,6 @@ const close = () => {
     padding: 20px;
     background-color: #fff;
     border-radius: 2px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   }
 }
 </style>

@@ -7,6 +7,7 @@ import SignUpPage from '../src/pages/SignUpPage.vue';
 import AboutPage from '../src/pages/AboutPage.vue';
 import LoginPage from '../src/pages/LoginPage.vue';
 import NotFound from '../src/pages/NotFound.vue';
+import Vet from '@/pages/Vet.vue';
 
 export default [
   {
@@ -17,6 +18,7 @@ export default [
   { path: '/about', component: AboutPage, name: 'О нас' },
   { path: '/services', component: PricePage, name: 'Услуги' },
   { path: '/specialists', component: SpecialistsPage, name: 'Наши специалисты' },
+  { path: '/specialist/:id', component: Vet, name: 'Специалст' },
   { path: '/contacts', component: ContactPage, name: 'Контакты' },
   {
     path: '/login',
