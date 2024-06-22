@@ -10,6 +10,7 @@ export default class Api {
       password: data.password,
     });
   }
+
   static async login(data) {
     return axios.post('/api/login.php', {
       login: data.login,
@@ -27,9 +28,13 @@ export default class Api {
 
   static async vet(id) {
     return axios.get('/api/vets.php', {
-      params: {
-        id,
-      },
+      params: { id },
+    });
+  }
+
+  static async client(id) {
+    return axios.get('/api/client.php', {
+      params: { id },
     });
   }
 
@@ -65,6 +70,19 @@ export default class Api {
     return axios.post('/api/appointment.php', {
       phone: data.phone,
       name: data.name,
+    });
+  }
+
+  static async reviews(id) {
+    return axios.get('/api/reviews.php', {
+      params: { id },
+    });
+  }
+
+  static async respond(data) {
+    return axios.post('/api/reviews.php', {
+      text: data.text,
+      veterinarian_id: data.veterinarian_id,
     });
   }
 }
